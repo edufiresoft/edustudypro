@@ -86,19 +86,6 @@
             position: relative;
         }
 
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 150px;
-            height: 150px;
-            background: var(--brand-orange);
-            filter: blur(120px);
-            opacity: 0.15;
-            z-index: 0;
-        }
-
         .hero-content { position: relative; z-index: 1; width: 100%; max-width: 900px; }
 
         .brand-tag {
@@ -152,12 +139,7 @@
             background: var(--brand-orange-hover);
         }
 
-        /* Section Global Styles */
-        .section-header { margin-bottom: 50px; text-align: center; }
-        .section-header h2 { font-size: 2.2rem; margin-bottom: 15px; color: var(--text-main); }
-        .section-header p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
-
-        /* Pomodoro Explanation Section */
+        /* Pomodoro Section */
         .pomodoro-intro {
             padding: 80px 10%;
             background: var(--section-bg);
@@ -174,93 +156,11 @@
             background: var(--card-bg);
             padding: 30px 20px;
             border-radius: 20px;
-            transition: 0.3s;
-            position: relative;
             text-align: center;
             border: 1px solid var(--card-border);
         }
 
-        .step:hover { background: var(--card-hover); transform: translateY(-5px); }
-
-        .step-number {
-            position: absolute;
-            top: -15px;
-            right: 20px;
-            background: var(--brand-orange);
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .step i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px; }
-        .step h4 { margin-bottom: 10px; font-size: 1.2rem; color: var(--text-main); }
-        .step p { font-size: 0.9rem; color: var(--text-secondary); }
-
-        /* Notes & Relaxation Shared Section */
-        .extra-features {
-            padding: 80px 10%;
-            background: linear-gradient(to bottom, var(--bg-color), var(--section-bg));
-        }
-
-        .feature-split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        .feature-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 40px;
-            border-radius: 30px;
-            transition: 0.4s;
-        }
-
-        .feature-box:hover {
-            background: var(--card-hover);
-            border-color: var(--brand-orange);
-        }
-
-        .feature-box i {
-            font-size: 3rem;
-            color: var(--brand-orange);
-            margin-bottom: 20px;
-        }
-
-        .feature-box h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: var(--text-main);
-        }
-
-        .feature-box p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tag {
-            background: rgba(249, 115, 22, 0.1);
-            color: var(--brand-orange);
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        /* Features Section (Why Choose Us) */
+        /* Features Section */
         .features { 
             padding: 80px 10%; 
             background: var(--feature-section-bg); 
@@ -268,21 +168,6 @@
             text-align: center;
             border-top-left-radius: 40px;
             border-top-right-radius: 40px;
-            margin-top: -30px; 
-            position: relative;
-            z-index: 2;
-        }
-
-        .features h2 {
-            font-size: 2.2rem;
-            margin-bottom: 50px;
-            font-weight: 800;
-        }
-
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 30px; 
         }
 
         .card { 
@@ -290,50 +175,11 @@
             border-radius: 25px; 
             background: white; 
             border: 1px solid #e2e8f0;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        body.light-mode .card {
-            background: #f8fafc;
-        }
-
-        .card::after {
-            content: "";
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 5px;
-            background: var(--brand-orange);
-            transform: scaleX(0);
-            transition: 0.4s;
-        }
-
-        .card:hover { 
-            transform: translateY(-10px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
-            border-color: transparent;
-        }
-
-        .card:hover::after { transform: scaleX(1); }
-
-        .card i { 
-            font-size: 3rem; 
-            color: var(--brand-orange); 
-            margin-bottom: 20px; 
-        }
-
-        .card h3 { 
-            font-size: 1.4rem; 
-            margin-bottom: 12px; 
-            color: #0f172a; /* Keep dark for contrast on white cards */
-        }
-
-        .card p { color: #64748b; font-size: 1rem; }
-
-        /* Footer */
         footer {
             padding: 40px;
             text-align: center;
@@ -342,15 +188,9 @@
             font-size: 0.85rem;
         }
 
-        @media (max-width: 992px) {
-            .feature-split { grid-template-columns: 1fr; }
-        }
-
         @media (max-width: 768px) {
-            .hero { padding: 50px 5% 70px; min-height: auto; }
             .hero h1 { font-size: 2.2rem; }
-            .cta-btn { width: 90%; padding: 16px; font-size: 1.1rem; }
-            .features, .pomodoro-intro, .extra-features { padding: 60px 5%; }
+            .cta-btn { width: 90%; }
         }
     </style>
 </head>
@@ -366,95 +206,52 @@
             <div class="brand-tag">EDU STUDY PRO ✨</div>
             <h1>ذاكر بإنجاز - أنجز <span>بسرعة</span></h1>
             <p>حوّل تشتتك إلى تركيز عميق. انضم إلى آلاف الطلاب الذين يستخدمون تقنياتنا الذكية لتنظيم وقتهم ومضاعفة إنتاجيتهم الدراسية.</p>
-            <a href="#" class="cta-btn">ابدأ رحلة النجاح الآن <i class="fas fa-rocket" style="margin-right: 10px;"></i></a>
+            
+            <!-- الإصلاح: تم ربط الزر بمسار Flask الصحيح /app -->
+            <a href="{{ url_for('study_tool') }}" class="cta-btn">
+                ابدأ رحلة النجاح الآن <i class="fas fa-rocket" style="margin-right: 10px;"></i>
+            </a>
         </div>
     </section>
 
     <!-- Pomodoro Section -->
     <section class="pomodoro-intro">
-        <div class="section-header">
+        <div style="text-align: center; margin-bottom: 50px;">
             <h2>ما هو نظام "بومودورو"؟</h2>
-            <p>تقنية عالمية لإدارة الوقت تعتمد على تقسيم العمل إلى فترات زمنية مركزة يفصلها استراحات قصيرة.</p>
+            <p>تقنية عالمية لإدارة الوقت تعتمد على تقسيم العمل إلى فترات زمنية مركزة.</p>
         </div>
 
         <div class="pomodoro-steps">
             <div class="step">
-                <div class="step-number">1</div>
-                <i class="fas fa-list-check"></i>
+                <i class="fas fa-list-check" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
                 <h4>اختر مهمة</h4>
                 <p>حدد موضوعاً واحداً تريد التركيز عليه الآن.</p>
             </div>
             <div class="step">
-                <div class="step-number">2</div>
-                <i class="fas fa-stopwatch"></i>
+                <i class="fas fa-stopwatch" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
                 <h4>اضبط المؤقت</h4>
                 <p>اعمل بتركيز كامل لمدة 25 دقيقة متواصلة.</p>
             </div>
             <div class="step">
-                <div class="step-number">3</div>
-                <i class="fas fa-mug-hot"></i>
+                <i class="fas fa-mug-hot" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
                 <h4>استراحة قصيرة</h4>
                 <p>خذ 5 دقائق راحة لتجديد نشاطك الذهني.</p>
-            </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <i class="fas fa-repeat"></i>
-                <h4>كرر العملية</h4>
-                <p>بعد 4 جلسات، خذ استراحة طويلة لشحن طاقتك.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- New Notes & Relaxation Section -->
-    <section class="extra-features">
-        <div class="section-header">
-            <h2>أدوات تعزز إنتاجيتك</h2>
-            <p>لم نكتفِ بالمؤقت فقط، بل أضفنا لك كل ما تحتاجه لتجربة دراسية متكاملة.</p>
-        </div>
-
-        <div class="feature-split">
-            <!-- Notes Section -->
-            <div class="feature-box">
-                <i class="fas fa-sticky-note"></i>
-                <h3>الملاحظات الذكية</h3>
-                <p>يمكنك تسجيل ملاحظة خاصة بكل مهمة؛ أعطِ الملاحظة اسماً وسوف يتم تسجيلها وحفظها بشكل تلقائي لتذكيرك بأهم النقاط لاحقاً.</p>
-                <div class="feature-tags">
-                    <span class="tag"><i class="fas fa-check"></i> حفظ تلقائي</span>
-                    <span class="tag"><i class="fas fa-file-export"></i> تصدير الملاحظة txt</span>
-                </div>
-            </div>
-
-            <!-- Relaxation Section -->
-            <div class="feature-box">
-                <i class="fas fa-wind"></i>
-                <h3>الاسترخاء أثناء المذاكرة</h3>
-                <p>ودع الضجيج! يمكنك تشغيل أصوات زخات المطر، زقزقة العصافير، أو "صوت التركيز" الأبيض لتجربة مليئة بالهدوء والانسجام.</p>
-                <div class="feature-tags">
-                    <span class="tag"><i class="fas fa-cloud-showers-heavy"></i> مطر</span>
-                    <span class="tag"><i class="fas fa-dove"></i> عصافير</span>
-                    <span class="tag"><i class="fas fa-headphones"></i> تركيز</span>
-                </div>
             </div>
         </div>
     </section>
 
     <section class="features">
-        <h2>لماذا يختارنا المبدعون؟</h2>
-        <div class="grid">
+        <h2 style="margin-bottom: 50px;">لماذا يختارنا المبدعون؟</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
             <div class="card">
-                <i class="fas fa-brain"></i>
+                <i class="fas fa-brain" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
                 <h3>تعزيز التركيز</h3>
-                <p>نظام بومودورو يمنع الإجهاد العقلي ويحافظ على ذروة نشاطك طوال فترة المذاكرة.</p>
+                <p>نظام بومودورو يمنع الإجهاد العقلي ويحافظ على ذروة نشاطك.</p>
             </div>
             <div class="card">
-                <i class="fas fa-tasks"></i>
-                <h3>إدارة مهام سهلة</h3>
-                <p>نظم موادك الدراسية بسلاسة، وراقب تقدمك بوضوح تام وتصميم مريح للعين.</p>
-            </div>
-            <div class="card">
-                <i class="fas fa-save"></i>
+                <i class="fas fa-save" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
                 <h3>بياناتك في أمان</h3>
-                <p>يتم حفظ تقدمك وملاحظاتك تلقائياً في متصفحك لتعود وتكمل من حيث توقفت في أي وقت.</p>
+                <p>يتم حفظ تقدمك وملاحظاتك تلقائياً في متصفحك لتعود وتكمل في أي وقت.</p>
             </div>
         </div>
     </section>
@@ -468,7 +265,6 @@
         const themeIcon = document.getElementById('themeIcon');
         const body = document.body;
 
-        // Load saved theme from localStorage
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme === 'light') {
             body.classList.add('light-mode');
@@ -477,8 +273,6 @@
 
         themeSwitcher.addEventListener('click', () => {
             body.classList.toggle('light-mode');
-            
-            // Switch Icons
             if (body.classList.contains('light-mode')) {
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 localStorage.setItem('theme', 'light');
@@ -488,6 +282,5 @@
             }
         });
     </script>
-
 </body>
 </html>
