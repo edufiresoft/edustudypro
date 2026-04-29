@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الاحترافية | Edu Study Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --dark: #0f172a; 
+            --orange: #f97316; 
+            --slate: #1e293b; 
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+        
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            background: var(--light); 
+            overflow: hidden; 
+            touch-action: pan-y;
+        }
+
+        /* --- الهيكل الرئيسي --- */
+        .sidebar-tasks, .sidebar-notes { 
+            width: 300px; 
+            background: var(--dark); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 20px; 
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            background: white;
+            position: relative;
+            min-width: 0;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        h2 { color: var(--orange); font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+
+        .add-box { display: flex; gap: 8px; margin-bottom: 15px; flex-shrink: 0; }
+        .add-box input { flex: 1; padding: 10px; border-radius: 8px; border: none; background: #334155; color: white; outline: none; font-size: 0.85rem; }
+        .add-box button { background: var(--orange); color: white; border: none; width: 40px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+
+        #taskList, #notesSidebarList {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .item-card { 
+            background: var(--slate); 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 8px; 
+            cursor: pointer; 
+            border-right: 3px solid transparent;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            position: relative;
+        }
+        .item-card:hover { background: #2d3a4f; }
+        .item-card.active { border-right-color: var(--orange); background: #2d3a4f; }
+        
+        .item-delete { color: #ef4444; background: none; border: none; float: left; cursor: pointer; opacity: 0.4; }
+        .item-delete:hover { opacity: 1; }
+
+        .stats-summary {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            border: 1px solid #334155;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        /* --- قسم المؤقت --- */
+        .timer-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #timer { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 800; color: var(--dark); font-variant-numeric: tabular-nums; }
+        
+        .timer-controls { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .timer-btn-row { display: flex; gap: 8px; }
+
+        #timerBtn {
+            flex: 2;
+            background: var(--orange); color: white; border: none;
+            padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;
+        }
+        #resetBtn {
+            flex: 1;
+            background: #334155; color: white; border: none;
+            padding: 12px; border-radius: 10px; cursor: pointer;
+        }
+
+        /* --- قسم الملاحظات (المحرر الرئيسي) --- */
+        .notes-section {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .editor-toolbar {
+            background: #f8fafc;
+            padding: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .toolbar-btn { min-width: 35px; height: 35px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; }
+        #exportBtn { margin-right: auto; padding: 0 10px; font-size: 0.8rem; background: #f1f5f9; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+
+        #noteEditor {
+            flex: 1;
+            padding: 20px;
+            font-size: 1rem;
+            outline: none;
+            overflow-y: auto;
+        }
+        #noteEditor:empty:before {
+            content: attr(placeholder);
+            color: #94a3b8;
+        }
+
+        /* --- شريط الأصوات --- */
+        .ambient-selector {
+            position: absolute;
+            bottom: 45px; /* رفع الأزرار قليلاً */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+            display: flex;
+            gap: 15px;
+            border: 1px solid var(--border);
+            z-index: 500;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .sound-btn { width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; background: #f1f5f9; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .sound-btn.active { background: var(--orange); color: white; transform: scale(1.1); }
+
+        /* --- شريط التنقل للجوال --- */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--dark);
+            height: 65px;
+            z-index: 1000;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        }
+        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 2px; }
+        .nav-item.active { color: var(--orange); }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--dark);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: 0.4s;
+            z-index: 2000;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 900px) {
+            .sidebar-tasks, .sidebar-notes {
+                position: fixed;
+                top: 0;
+                bottom: 65px;
+                width: 100%;
+                transform: translateX(100%);
+            }
+            .sidebar-notes { transform: translateX(-100%); }
+
+            .sidebar-tasks.open, .sidebar-notes.open { transform: translateX(0) !important; }
+
+            .mobile-nav { display: flex; }
+            .main-content { padding-bottom: 65px; width: 100%; }
+
+            .timer-section { flex-direction: column; text-align: center; }
+            
+            /* إخفاء الأصوات في الأقسام الجانبية في الجوال */
+            .ambient-selector { 
+                bottom: 110px; /* مكان مرتفع ومريح فوق شريط التنقل */
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            /* إظهارها فقط في شاشة المؤقت الرئيسية */
+            body:not(.tasks-open):not(.notes-open) .ambient-selector {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+        }
+    </style>
+</head>
+<body id="swipeArea">
+
+    <div id="toast"></div>
+
+    <!-- شريط المهام (اليمين) -->
+    <div class="sidebar-tasks" id="sidebarTasks">
+        <h2><i class="fas fa-list-check"></i> المهام</h2>
+        <div class="add-box">
+            <input type="text" id="taskInput" placeholder="أضف مهمة..." onkeydown="if(event.key==='Enter') addTask()">
+            <button onclick="addTask()"><i class="fas fa-plus"></i></button>
+        </div>
+        <div id="taskList"></div>
+        <div class="stats-summary">
+            <div>جلسات: <b id="statSessions">0</b></div>
+            <div>دقائق: <b id="statMinutes">0</b></div>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي (المؤقت + المحرر) -->
+    <div class="main-content" id="mainContent">
+        <div class="timer-section">
+            <div class="timer-display">
+                <div id="activeTaskTitle" style="color: var(--orange); font-size: 0.9rem; font-weight: bold;">جاهز للدراسة؟</div>
+                <div id="timer">25:00</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-btn-row">
+                    <button id="timerBtn" onclick="toggleTimer()">ابدأ التركيز</button>
+                    <button id="resetBtn" onclick="resetTimer()"><i class="fas fa-rotate-right"></i></button>
+                </div>
+                <input type="range" id="timerSlider" min="1" max="90" value="25" oninput="adjustTime(this.value)" style="width: 100%; accent-color: var(--orange);">
+            </div>
+        </div>
+
+        <div class="notes-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1rem;"><i class="fas fa-feather-alt"></i> <span id="currentNoteTitle">محرر الملاحظات</span></h3>
+                <div style="display:flex; gap:5px;">
+                    <button id="saveNoteBtn" onclick="saveCurrentNoteContent()" style="display:none; background: var(--success); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">حفظ التعديل</button>
+                    <button onclick="clearCurrentNote()" style="background: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">جديد</button>
+                </div>
+            </div>
+            <div class="editor-wrapper">
+                <div class="editor-toolbar">
+                    <button class="toolbar-btn" onclick="document.execCommand('bold')"><i class="fas fa-bold"></i></button>
+                    <button class="toolbar-btn" onclick="document.execCommand('italic')"><i class="fas fa-italic"></i></button>
+                    <button class="toolbar-btn" onclick="document.execCommand('underline')"><i class="fas fa-underline"></i></button>
+                    <button id="exportBtn" onclick="exportTxt()"><i class="fas fa-download"></i> تصدير</button>
+                </div>
+                <div id="noteEditor" contenteditable="true" placeholder="اكتب ملاحظتك هنا..." oninput="handleEditorInput()"></div>
+            </div>
+        </div>
+
+        <!-- الأصوات -->
+        <div class="ambient-selector">
+            <button class="sound-btn" id="btn-rain" title="مطر خفيف" onclick="toggleAudio('rain')"><i class="fas fa-cloud-rain"></i></button>
+            <button class="sound-btn" id="btn-birds" title="زقزقة عصافير" onclick="toggleAudio('birds')"><i class="fas fa-crow"></i></button>
+            <button class="sound-btn" id="btn-focus" title="صمت التركيز" onclick="toggleAudio('focus')"><i class="fas fa-headphones"></i></button>
+        </div>
+    </div>
+
+    <!-- شريط الحافظة (اليسار) -->
+    <div class="sidebar-notes" id="sidebarNotes">
+        <h2><i class="fas fa-sticky-note"></i> الحافظة</h2>
+        <div class="add-box">
+            <input type="text" id="noteTitleInput" placeholder="اسم الملاحظة الجديدة..." onkeydown="if(event.key==='Enter') createNewNote()">
+            <button onclick="createNewNote()"><i class="fas fa-save"></i></button>
+        </div>
+        <div id="notesSidebarList"></div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="mobile-nav">
+        <div class="nav-item" onclick="viewTab('tasks')" id="nav-tasks">
+            <i class="fas fa-list-check"></i>
+            <span>المهام</span>
+        </div>
+        <div class="nav-item active" onclick="viewTab('timer')" id="nav-timer">
+            <i class="fas fa-clock"></i>
+            <span>المؤقت</span>
+        </div>
+        <div class="nav-item" onclick="viewTab('notes')" id="nav-notes">
+            <i class="fas fa-sticky-note"></i>
+            <span>الملاحظات</span>
+        </div>
+    </nav>
+
+    <script>
+        // --- تهيئة البيانات ---
+        let tasks = JSON.parse(localStorage.getItem('eduTasks_v7')) || [];
+        let savedNotes = JSON.parse(localStorage.getItem('eduNotes_v7')) || [];
+        let stats = JSON.parse(localStorage.getItem('eduStats_v7')) || { sessions: 0, minutes: 0 };
+
+        let timerSeconds = 1500;
+        let chosenMinutes = 25;
+        let isTimerRunning = false;
+        let timerInterval;
+        let activeTaskIdx = null;
+        let currentActiveTab = 'timer';
+        let currentlyEditingNoteIdx = null;
+
+        // --- نظام التمرير (Swipe) ---
+        let touchstartX = 0;
+        let touchendX = 0;
+        document.getElementById('swipeArea').addEventListener('touchstart', e => touchstartX = e.changedTouches[0].screenX, false);
+        document.getElementById('swipeArea').addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (window.innerWidth <= 900) {
+                const diff = touchendX - touchstartX;
+                if (diff < -80) { // سحب لليسار
+                    if (currentActiveTab === 'tasks') viewTab('timer');
+                    else if (currentActiveTab === 'timer') viewTab('notes');
+                } else if (diff > 80) { // سحب لليمين
+                    if (currentActiveTab === 'notes') viewTab('timer');
+                    else if (currentActiveTab === 'timer') viewTab('tasks');
+                }
+            }
+        }, false);
+
+        function viewTab(tab) {
+            currentActiveTab = tab;
+            const body = document.body;
+            body.classList.remove('tasks-open', 'notes-open');
+            document.getElementById('sidebarTasks').classList.remove('open');
+            document.getElementById('sidebarNotes').classList.remove('open');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            if (tab === 'tasks') {
+                document.getElementById('sidebarTasks').classList.add('open');
+                document.getElementById('nav-tasks').classList.add('active');
+                body.classList.add('tasks-open');
+            } else if (tab === 'notes') {
+                document.getElementById('sidebarNotes').classList.add('open');
+                document.getElementById('nav-notes').classList.add('active');
+                body.classList.add('notes-open');
+            } else {
+                document.getElementById('nav-timer').classList.add('active');
+            }
+        }
+
+        // --- الملاحظات ---
+        function createNewNote() {
+            const titleInput = document.getElementById('noteTitleInput');
+            const editor = document.getElementById('noteEditor');
+            if (titleInput.value.trim()) {
+                const newNote = { 
+                    title: titleInput.value, 
+                    content: editor.innerHTML, 
+                    date: new Date().toLocaleDateString('ar') 
+                };
+                savedNotes.unshift(newNote);
+                titleInput.value = '';
+                saveData();
+                renderAll();
+                loadNoteIntoEditor(0);
+                notify("✅ تم حفظ الملاحظة");
+            }
+        }
+
+        function loadNoteIntoEditor(idx) {
+            currentlyEditingNoteIdx = idx;
+            const note = savedNotes[idx];
+            const editor = document.getElementById('noteEditor');
+            editor.innerHTML = note.content;
+            document.getElementById('currentNoteTitle').textContent = note.title;
+            document.getElementById('saveNoteBtn').style.display = 'block';
+            if (window.innerWidth <= 900) viewTab('timer');
+            renderAll();
+        }
+
+        function saveCurrentNoteContent() {
+            if (currentlyEditingNoteIdx !== null && savedNotes[currentlyEditingNoteIdx]) {
+                savedNotes[currentlyEditingNoteIdx].content = document.getElementById('noteEditor').innerHTML;
+                saveData();
+                notify("💾 تم تحديث الملاحظة");
+            }
+        }
+
+        function clearCurrentNote() {
+            currentlyEditingNoteIdx = null;
+            document.getElementById('noteEditor').innerHTML = '';
+            document.getElementById('currentNoteTitle').textContent = 'محرر الملاحظات';
+            document.getElementById('saveNoteBtn').style.display = 'none';
+            renderAll();
+        }
+
+        function handleEditorInput() {
+            if (currentlyEditingNoteIdx !== null) {
+                savedNotes[currentlyEditingNoteIdx].content = document.getElementById('noteEditor').innerHTML;
+                saveData();
+            }
+        }
+
+        // --- نظام الصوت المحسن ---
+        let audioCtx = null;
+        let activeSound = null;
+        let activeNodes = {};
+
+        function getCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        function startRain() {
+            const ctx = getCtx();
+            const bufferSize = 2 * ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const output = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+            const whiteNoise = ctx.createBufferSource();
+            whiteNoise.buffer = buffer; whiteNoise.loop = true;
+            const lowpass = ctx.createBiquadFilter();
+            lowpass.type = 'lowpass'; lowpass.frequency.value = 400;
+            const gain = ctx.createGain(); gain.gain.value = 0.15;
+            whiteNoise.connect(lowpass); lowpass.connect(gain); gain.connect(ctx.destination);
+            whiteNoise.start();
+            return { src: whiteNoise };
+        }
+
+        function startBirds() {
+            const ctx = getCtx();
+            const wind = ctx.createBufferSource();
+            const sr = ctx.sampleRate;
+            const buf = ctx.createBuffer(1, sr * 3, sr);
+            const d = buf.getChannelData(0);
+            for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.01;
+            wind.buffer = buf; wind.loop = true;
+            const windGain = ctx.createGain(); windGain.gain.value = 0.05;
+            wind.connect(windGain); windGain.connect(ctx.destination); wind.start();
+            
+            const iv = setInterval(() => {
+                if (activeSound !== 'birds') return;
+                const o = ctx.createOscillator(); const g = ctx.createGain();
+                o.type = 'sine'; o.frequency.setValueAtTime(2500 + Math.random() * 1500, ctx.currentTime);
+                g.gain.setValueAtTime(0, ctx.currentTime);
+                g.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.05);
+                g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+                o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.25);
+            }, 1800);
+            return { src: wind, iv };
+        }
+
+        function startFocus() {
+            const ctx = getCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine'; osc.frequency.value = 100;
+            gain.gain.value = 0.05;
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start();
+            return { src: osc };
+        }
+
+        function toggleAudio(type) {
+            getCtx();
+            if (activeSound === type) {
+                stopCurrentAudio();
+                activeSound = null;
+                document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+                return;
+            }
+            stopCurrentAudio();
+            
+            if (type === 'rain') activeNodes = startRain();
+            else if (type === 'birds') activeNodes = startBirds();
+            else if (type === 'focus') activeNodes = startFocus();
+            
+            activeSound = type;
+            document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + type).classList.add('active');
+        }
+
+        function stopCurrentAudio() {
+            if (activeNodes.src) {
+                try { activeNodes.src.stop(); } catch(e) {}
+            }
+            if (activeNodes.iv) clearInterval(activeNodes.iv);
+            activeNodes = {};
+        }
+
+        // --- وظائف المؤقت ---
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60);
+            const s = timerSeconds % 60;
+            document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function toggleTimer() {
+            if (activeTaskIdx === null) { notify("اختر مهمة أولاً"); viewTab('tasks'); return; }
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                document.getElementById('timerBtn').textContent = "إيقاف";
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); }
+                    else { finishSession(); }
+                }, 1000);
+            } else {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById('timerBtn').textContent = "استئناف";
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            document.getElementById('timerBtn').textContent = "ابدأ التركيز";
+            timerSeconds = chosenMinutes * 60;
+            updateTimerDisplay();
+        }
+
+        function finishSession() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            stats.sessions++;
+            stats.minutes += tasks[activeTaskIdx].time;
+            saveData(); renderAll();
+            notify("✅ انتهت الجلسة!");
+            document.getElementById('timerBtn').textContent = "ابدأ التركيز";
+        }
+
+        function adjustTime(val) {
+            chosenMinutes = parseInt(val);
+            if (activeTaskIdx !== null) tasks[activeTaskIdx].time = chosenMinutes;
+            timerSeconds = chosenMinutes * 60;
+            updateTimerDisplay();
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            if (input.value.trim()) {
+                tasks.push({ name: input.value, time: 25 });
+                input.value = '';
+                saveData(); renderAll();
+            }
+        }
+
+        function selectTask(idx) {
+            activeTaskIdx = idx;
+            chosenMinutes = tasks[idx].time;
+            timerSeconds = chosenMinutes * 60;
+            document.getElementById('activeTaskTitle').textContent = "التركيز على: " + tasks[idx].name;
+            document.getElementById('timerSlider').value = chosenMinutes;
+            updateTimerDisplay(); renderAll();
+            if (window.innerWidth <= 900) viewTab('timer');
+        }
+
+        function deleteTask(i) {
+            tasks.splice(i, 1);
+            if (activeTaskIdx === i) activeTaskIdx = null;
+            saveData(); renderAll();
+        }
+
+        function exportTxt() {
+            const text = document.getElementById('noteEditor').innerText;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = 'note.txt'; a.click();
+        }
+
+        function notify(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function saveData() {
+            localStorage.setItem('eduTasks_v7', JSON.stringify(tasks));
+            localStorage.setItem('eduNotes_v7', JSON.stringify(savedNotes));
+            localStorage.setItem('eduStats_v7', JSON.stringify(stats));
+        }
+
+        function renderAll() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((t, i) => {
+                taskList.innerHTML += `
+                    <div class="item-card ${activeTaskIdx === i ? 'active' : ''}" onclick="selectTask(${i})">
+                        <button class="item-delete" onclick="event.stopPropagation(); deleteTask(${i});">✕</button>
+                        <div>${t.name}</div>
+                        <div style="font-size: 0.7rem; color: #94a3b8;">${t.time} دقيقة</div>
+                    </div>`;
+            });
+
+            const noteList = document.getElementById('notesSidebarList');
+            noteList.innerHTML = '';
+            savedNotes.forEach((n, i) => {
+                noteList.innerHTML += `
+                    <div class="item-card ${currentlyEditingNoteIdx === i ? 'active' : ''}" onclick="loadNoteIntoEditor(${i})">
+                        <button class="item-delete" onclick="event.stopPropagation(); savedNotes.splice(${i},1); if(currentlyEditingNoteIdx===${i})clearCurrentNote(); saveData(); renderAll();">✕</button>
+                        <div style="font-weight: bold;">${n.title}</div>
+                        <div style="font-size: 0.6rem; color: #94a3b8;">${n.date}</div>
+                    </div>`;
+            });
+
+            document.getElementById('statSessions').textContent = stats.sessions;
+            document.getElementById('statMinutes').textContent = stats.minutes;
+        }
+
+        window.onload = renderAll;
+    </script>
+</body>
+</html>
