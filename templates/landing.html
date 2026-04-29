@@ -7,83 +7,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
-            /* Dark Theme Colors (Default) */
-            --bg-color: #0f172a;
-            --section-bg: #111827;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-hover: rgba(255, 255, 255, 0.05);
-            --text-main: #ffffff;
-            --text-secondary: #94a3b8;
-            --brand-orange: #f97316;
-            --brand-orange-hover: #fb923c;
-            --nav-bg: #1e293b;
-            --card-border: rgba(255, 255, 255, 0.05);
-            --feature-section-bg: #f8fafc;
-            --feature-text: #0f172a;
+            --brand-blue: #0f172a; 
+            --brand-orange: #f97316; 
+            --text-slate: #94a3b8; 
+            --slate-light: #1e293b;
+            --soft-white: #f8fafc;
         }
 
-        /* Light Theme Colors overrides */
-        body.light-mode {
-            --bg-color: #f1f5f9;
-            --section-bg: #ffffff;
-            --card-bg: #ffffff;
-            --card-hover: #f8fafc;
-            --text-main: #1e293b;
-            --text-secondary: #475569;
-            --brand-orange: #ea580c;
-            --brand-orange-hover: #c2410c;
-            --nav-bg: #e2e8f0;
-            --card-border: #e2e8f0;
-            --feature-section-bg: #cbd5e1;
-            --feature-text: #0f172a;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
+            background-color: var(--brand-blue); 
+            color: white; 
             line-height: 1.6;
             overflow-x: hidden;
-        }
-
-        /* Theme Toggle Button */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: var(--brand-orange);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-size: 1.2rem;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
         }
 
         /* Hero Section */
         .hero { 
             padding: 60px 10% 80px; 
             text-align: center; 
-            background: radial-gradient(circle at top right, var(--nav-bg), var(--bg-color)); 
+            background: radial-gradient(circle at top right, #1e293b, #0f172a); 
             min-height: 80vh; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 150px;
+            height: 150px;
+            background: var(--brand-orange);
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
         }
 
         .hero-content { position: relative; z-index: 1; width: 100%; max-width: 900px; }
@@ -106,14 +70,13 @@
             margin-bottom: 20px; 
             font-weight: 900;
             line-height: 1.2;
-            color: var(--text-main);
         }
 
         .hero h1 span { color: var(--brand-orange); }
 
         .hero p { 
             font-size: clamp(1rem, 2.5vw, 1.2rem); 
-            color: var(--text-secondary); 
+            color: var(--text-slate); 
             max-width: 700px; 
             margin-bottom: 40px;
             margin-left: auto;
@@ -136,13 +99,18 @@
         .cta-btn:hover { 
             transform: translateY(-5px) scale(1.03); 
             box-shadow: 0 15px 35px rgba(249, 115, 22, 0.5);
-            background: var(--brand-orange-hover);
+            background: #fb923c;
         }
 
-        /* Pomodoro Section */
+        /* Section Global Styles */
+        .section-header { margin-bottom: 50px; text-align: center; }
+        .section-header h2 { font-size: 2.2rem; margin-bottom: 15px; }
+        .section-header p { color: var(--text-slate); max-width: 600px; margin: 0 auto; }
+
+        /* Pomodoro Explanation Section */
         .pomodoro-intro {
             padding: 80px 10%;
-            background: var(--section-bg);
+            background: #111827;
         }
 
         .pomodoro-steps {
@@ -153,21 +121,116 @@
         }
 
         .step {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.03);
             padding: 30px 20px;
             border-radius: 20px;
+            transition: 0.3s;
+            position: relative;
             text-align: center;
-            border: 1px solid var(--card-border);
+        }
+
+        .step:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-5px); }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--brand-orange);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step i { font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px; }
+        .step h4 { margin-bottom: 10px; font-size: 1.2rem; }
+        .step p { font-size: 0.9rem; color: var(--text-slate); }
+
+        /* Notes & Relaxation Shared Section */
+        .extra-features {
+            padding: 80px 10%;
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+        }
+
+        .feature-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 30px;
+            transition: 0.4s;
+        }
+
+        .feature-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--brand-orange);
+        }
+
+        .feature-box i {
+            font-size: 3rem;
+            color: var(--brand-orange);
+            margin-bottom: 20px;
+        }
+
+        .feature-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature-box p {
+            color: var(--text-slate);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--brand-orange);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
         }
 
         /* Features Section */
         .features { 
             padding: 80px 10%; 
-            background: var(--feature-section-bg); 
-            color: var(--feature-text); 
+            background: var(--soft-white); 
+            color: var(--brand-blue); 
             text-align: center;
             border-top-left-radius: 40px;
             border-top-right-radius: 40px;
+            margin-top: -30px; 
+            position: relative;
+            z-index: 2;
+        }
+
+        .features h2 {
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            font-weight: 800;
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px; 
         }
 
         .card { 
@@ -175,83 +238,162 @@
             border-radius: 25px; 
             background: white; 
             border: 1px solid #e2e8f0;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        .card::after {
+            content: "";
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 5px;
+            background: var(--brand-orange);
+            transform: scaleX(0);
+            transition: 0.4s;
+        }
+
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06); 
+            border-color: transparent;
+        }
+
+        .card:hover::after { transform: scaleX(1); }
+
+        .card i { 
+            font-size: 3rem; 
+            color: var(--brand-orange); 
+            margin-bottom: 20px; 
+        }
+
+        .card h3 { 
+            font-size: 1.4rem; 
+            margin-bottom: 12px; 
+            color: var(--brand-blue);
+        }
+
+        .card p { color: #64748b; font-size: 1rem; }
+
+        /* Footer */
         footer {
             padding: 40px;
             text-align: center;
-            background: var(--nav-bg);
-            color: var(--text-secondary);
+            background: var(--slate-light);
+            color: var(--text-slate);
             font-size: 0.85rem;
         }
 
+        @media (max-width: 992px) {
+            .feature-split { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 768px) {
+            .hero { padding: 50px 5% 70px; min-height: auto; }
             .hero h1 { font-size: 2.2rem; }
-            .cta-btn { width: 90%; }
+            .cta-btn { width: 90%; padding: 16px; font-size: 1.1rem; }
+            .features, .pomodoro-intro, .extra-features { padding: 60px 5%; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Theme Toggle -->
-    <button class="theme-toggle" id="themeSwitcher" title="تبديل الوضع">
-        <i class="fas fa-sun" id="themeIcon"></i>
-    </button>
 
     <section class="hero">
         <div class="hero-content">
             <div class="brand-tag">EDU STUDY PRO ✨</div>
             <h1>ذاكر بإنجاز - أنجز <span>بسرعة</span></h1>
             <p>حوّل تشتتك إلى تركيز عميق. انضم إلى آلاف الطلاب الذين يستخدمون تقنياتنا الذكية لتنظيم وقتهم ومضاعفة إنتاجيتهم الدراسية.</p>
-            
-            <!-- الإصلاح: تم ربط الزر بمسار Flask الصحيح /app -->
-            <a href="{{ url_for('study_tool') }}" class="cta-btn">
-                ابدأ رحلة النجاح الآن <i class="fas fa-rocket" style="margin-right: 10px;"></i>
-            </a>
+            <a href="/app" class="cta-btn">ابدأ رحلة النجاح الآن <i class="fas fa-rocket" style="margin-right: 10px;"></i></a>
         </div>
     </section>
 
     <!-- Pomodoro Section -->
     <section class="pomodoro-intro">
-        <div style="text-align: center; margin-bottom: 50px;">
+        <div class="section-header">
             <h2>ما هو نظام "بومودورو"؟</h2>
-            <p>تقنية عالمية لإدارة الوقت تعتمد على تقسيم العمل إلى فترات زمنية مركزة.</p>
+            <p>تقنية عالمية لإدارة الوقت تعتمد على تقسيم العمل إلى فترات زمنية مركزة يفصلها استراحات قصيرة.</p>
         </div>
 
         <div class="pomodoro-steps">
             <div class="step">
-                <i class="fas fa-list-check" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+                <div class="step-number">1</div>
+                <i class="fas fa-list-check"></i>
                 <h4>اختر مهمة</h4>
                 <p>حدد موضوعاً واحداً تريد التركيز عليه الآن.</p>
             </div>
             <div class="step">
-                <i class="fas fa-stopwatch" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+                <div class="step-number">2</div>
+                <i class="fas fa-stopwatch"></i>
                 <h4>اضبط المؤقت</h4>
                 <p>اعمل بتركيز كامل لمدة 25 دقيقة متواصلة.</p>
             </div>
             <div class="step">
-                <i class="fas fa-mug-hot" style="font-size: 2.5rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+                <div class="step-number">3</div>
+                <i class="fas fa-mug-hot"></i>
                 <h4>استراحة قصيرة</h4>
                 <p>خذ 5 دقائق راحة لتجديد نشاطك الذهني.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <i class="fas fa-repeat"></i>
+                <h4>كرر العملية</h4>
+                <p>بعد 4 جلسات، خذ استراحة طويلة لشحن طاقتك.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Notes & Relaxation Section -->
+    <section class="extra-features">
+        <div class="section-header">
+            <h2>أدوات تعزز إنتاجيتك</h2>
+            <p>لم نكتفِ بالمؤقت فقط، بل أضفنا لك كل ما تحتاجه لتجربة دراسية متكاملة.</p>
+        </div>
+
+        <div class="feature-split">
+            <!-- Notes Section -->
+            <div class="feature-box">
+                <i class="fas fa-sticky-note"></i>
+                <h3>الملاحظات الذكية</h3>
+                <p>يمكنك تسجيل ملاحظة خاصة بكل مهمة؛ أعطِ الملاحظة اسماً وسوف يتم تسجيلها وحفظها بشكل تلقائي لتذكيرك بأهم النقاط لاحقاً.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fas fa-check"></i> حفظ تلقائي</span>
+                    <span class="tag"><i class="fas fa-file-export"></i> تصدير الملاحظة txt</span>
+                </div>
+            </div>
+
+            <!-- Relaxation Section -->
+            <div class="feature-box">
+                <i class="fas fa-wind"></i>
+                <h3>الاسترخاء أثناء المذاكرة</h3>
+                <p>ودع الضجيج! يمكنك تشغيل أصوات زخات المطر، زقزقة العصافير، أو "صوت التركيز" الأبيض لتجربة مليئة بالهدوء والانسجام.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fas fa-cloud-showers-heavy"></i> مطر</span>
+                    <span class="tag"><i class="fas fa-dove"></i> عصافير</span>
+                    <span class="tag"><i class="fas fa-headphones"></i> تركيز</span>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="features">
-        <h2 style="margin-bottom: 50px;">لماذا يختارنا المبدعون؟</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+        <h2>لماذا يختارنا المبدعون؟</h2>
+        <div class="grid">
             <div class="card">
-                <i class="fas fa-brain" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+                <i class="fas fa-brain"></i>
                 <h3>تعزيز التركيز</h3>
-                <p>نظام بومودورو يمنع الإجهاد العقلي ويحافظ على ذروة نشاطك.</p>
+                <p>نظام بومودورو يمنع الإجهاد العقلي ويحافظ على ذروة نشاطك طوال فترة المذاكرة.</p>
             </div>
             <div class="card">
-                <i class="fas fa-save" style="font-size: 3rem; color: var(--brand-orange); margin-bottom: 20px;"></i>
+                <i class="fas fa-tasks"></i>
+                <h3>إدارة مهام سهلة</h3>
+                <p>نظم موادك الدراسية بسلاسة، وراقب تقدمك بوضوح تام وتصميم مريح للعين.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-save"></i>
                 <h3>بياناتك في أمان</h3>
-                <p>يتم حفظ تقدمك وملاحظاتك تلقائياً في متصفحك لتعود وتكمل في أي وقت.</p>
+                <p>يتم حفظ تقدمك وملاحظاتك تلقائياً في متصفحك لتعود وتكمل من حيث توقفت في أي وقت.</p>
             </div>
         </div>
     </section>
@@ -260,27 +402,5 @@
         جميع الحقوق محفوظة &copy; 2026 | Edu Study Pro - رفيقك نحو القمة
     </footer>
 
-    <script>
-        const themeSwitcher = document.getElementById('themeSwitcher');
-        const themeIcon = document.getElementById('themeIcon');
-        const body = document.body;
-
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'light') {
-            body.classList.add('light-mode');
-            themeIcon.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        themeSwitcher.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            if (body.classList.contains('light-mode')) {
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'light');
-            } else {
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-    </script>
 </body>
 </html>
